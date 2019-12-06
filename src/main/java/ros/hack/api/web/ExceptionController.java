@@ -18,6 +18,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import ros.hack.api.model.ErrorResponse;
 
 import javax.annotation.Nonnull;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,11 +96,11 @@ public class ExceptionController {
         return new ErrorResponse(exception.getMessage());
     }
 
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    @ExceptionHandler(EntityNotFoundException.class)
-//    public ErrorResponse handleNotFound(EntityNotFoundException exception) {
-//        return new ErrorResponse(exception.getMessage());
-//    }
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ErrorResponse handleNotFound(EntityNotFoundException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
