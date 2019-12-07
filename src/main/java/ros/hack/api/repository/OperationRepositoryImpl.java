@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ros.hack.api.entity.Operation;
 import ros.hack.api.entity.QOperation;
+import ros.hack.api.enums.PagingDirection;
 import ros.hack.api.model.OperationsRequest;
 
 import javax.annotation.Nonnull;
@@ -28,15 +29,16 @@ public class OperationRepositoryImpl
     @Override
     @SuppressWarnings("all")
     public List<Operation> findAll(@Nonnull OperationsRequest request) {
-        JPAQuery query = new JPAQuery(entityManager);
-        QOperation operation = QOperation.operation;
+        final JPAQuery query = new JPAQuery(entityManager);
+        final QOperation operation = QOperation.operation;
 
-        Predicate predicate = buildPredicate(operation, request);
+        final Predicate filterPredicate = buildFilterPredicate(operation, request);
+        final Predicate directionPredicate = buildDirectionPredicate(operation, request);
 
         query.from(operation)
                 .where(operation.userId.eq(request.getUserId()))
-                .where(predicate)
-                .where(operation.id.goe(request.getLastItemId()))
+                .where(filterPredicate)
+                .where(directionPredicate)
                 .where(operation.ready.eq(true))
                 .orderBy(operation.id.desc())
                 .limit(request.getItemsCount() > 0 ? request.getItemsCount() : DEFAULT_LIMIT);
@@ -60,13 +62,30 @@ public class OperationRepositoryImpl
     }
 
     @Nonnull
-    private Predicate buildPredicate(@Nonnull QOperation operation, @Nonnull OperationsRequest request) {
+    private Predicate buildFilterPredicate(@Nonnull QOperation operation, @Nonnull OperationsRequest request) {
         BooleanBuilder predicate = new BooleanBuilder();
+        if (isNotEmpty(request.getStatus())) {
+            predicate.and(operation.status.eq(request.getStatus()));
+        }
+        if (isNotEmpty(request.getExtendedStatus())) {
+            predicate.and(operation.extendedStatus.eq(request.getExtendedStatus()));
+        }
         if (isNotEmpty(request.getSourceId())) {
             predicate.and(operation.sourceId.eq(request.getSourceId()));
         }
         if (isNotEmpty(request.getCategory())) {
             predicate.and(operation.mcc.eq(request.getCategory()));
+        }
+        return predicate;
+    }
+
+    @Nonnull
+    private Predicate buildDirectionPredicate(@Nonnull QOperation operation, @Nonnull OperationsRequest request) {
+        BooleanBuilder predicate = new BooleanBuilder();
+        if (request.getPagingDirection() == PagingDirection.UP) {
+            predicate.and(operation.id.lt(request.getLastItemId()));
+        } else {
+            predicate.and(operation.id.gt(request.getLastItemId()));
         }
         return predicate;
     }
