@@ -1,5 +1,6 @@
 plugins {
     id "org.springframework.boot" version "2.1.7.RELEASE"
+    id "io.spring.dependency-management" version "1.0.7.RELEASE"
 }
 
 apply plugin: "java"
@@ -7,7 +8,6 @@ apply plugin: "idea"
 apply plugin: "org.springframework.boot"
 apply plugin: "io.spring.dependency-management"
 apply from: "libraries.gradle"
-
 
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
@@ -21,12 +21,10 @@ repositories {
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "org.springframework.boot:spring-boot-starter-data-jpa"
-    //compile "org.springframework.data:spring-data-redis"
+    compile "org.springframework.data:spring-data-redis"
     compile "org.springframework.boot:spring-boot-starter-thymeleaf"
     compile "org.springframework.boot:spring-boot-starter-actuator"
     compile "org.springframework.boot:spring-boot-starter-logging"
-    //compile "org.springframework.boot:spring-boot-starter-security"
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     compile "redis.clients:jedis"
     compile "org.postgresql:postgresql"
@@ -35,13 +33,17 @@ dependencies {
     compile "com.google.guava:guava:${guavaVersion}"
     compile "org.apache.commons:commons-lang3:${commonsLangVersion}"
 
-    compile "io.swagger:swagger-annotations:${swaggerVersion}"
-    compile "io.springfox:springfox-swagger-ui:${swaggerSpringVersion}"
-    compile "io.springfox:springfox-swagger2:${swaggerSpringVersion}"
+    compile "com.querydsl:querydsl-core:${queryDslVersion}"
+    compile "com.querydsl:querydsl-jpa:${queryDslVersion}"
 
     compileOnly "com.google.code.findbugs:jsr305:${findBugsVersion}"
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok"
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    annotationProcessor "javax.persistence:javax.persistence-api"
+    annotationProcessor "javax.annotation:javax.annotation-api"
+    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     testCompile "org.springframework.boot:spring-boot-starter-test"
     testCompile "org.projectlombok:lombok"
