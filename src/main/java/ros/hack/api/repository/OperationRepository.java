@@ -1,12 +1,8 @@
 package ros.hack.api.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ros.hack.api.entity.Operation;
-import ros.hack.api.model.OperationsRequest;
 
-import javax.annotation.Nonnull;
-import java.util.List;
-
-public interface OperationRepository {
-    @Nonnull
-    List<Operation> findAllOperations(@Nonnull OperationsRequest request);
+public interface OperationRepository
+        extends JpaRepository<Operation, Long> {
 }

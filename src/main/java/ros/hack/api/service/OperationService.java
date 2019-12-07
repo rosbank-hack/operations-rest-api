@@ -9,4 +9,6 @@ import java.util.List;
 public interface OperationService {
     @Nonnull
     List<OperationInfo> findOperations(@Nonnull OperationsRequest operationsRequest);
+    @Nonnull
+    OperationInfo getOperation(@Nonnull Long id);
 }

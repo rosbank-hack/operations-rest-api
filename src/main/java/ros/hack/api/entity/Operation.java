@@ -65,6 +65,9 @@ public class Operation
     @Column(name = "extra")
     private String extra;
 
+    @Column(name = "ready")
+    private boolean ready;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -108,6 +111,7 @@ public class Operation
                 .add("amount", amount)
                 .add("currency", currency)
                 .add("mcc", mcc)
+                .add("ready", ready)
                 .toString();
     }
 }

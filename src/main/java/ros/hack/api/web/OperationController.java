@@ -1,6 +1,8 @@
 package ros.hack.api.web;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,5 +28,13 @@ public class OperationController {
     )
     public List<OperationInfo> findOperations(@RequestBody @Valid OperationsRequest request) {
         return operationService.findOperations(request);
+    }
+
+    @GetMapping(
+            path = "/{id}",
+            produces = APPLICATION_JSON_UTF8_VALUE
+    )
+    public OperationInfo getOperation(@PathVariable Long id) {
+        return operationService.getOperation(id);
     }
 }

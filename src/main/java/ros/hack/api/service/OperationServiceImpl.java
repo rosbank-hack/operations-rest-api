@@ -8,11 +8,14 @@ import ros.hack.api.entity.Operation;
 import ros.hack.api.model.OperationInfo;
 import ros.hack.api.model.OperationsRequest;
 import ros.hack.api.redis.OperationCacheService;
+import ros.hack.api.repository.OperationHistoryRepository;
 import ros.hack.api.repository.OperationRepository;
 
 import javax.annotation.Nonnull;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 import static ros.hack.api.utils.DateFormatUtils.format;
@@ -24,8 +27,9 @@ public class OperationServiceImpl
         implements OperationService {
     private static final Logger logger = getLogger(OperationServiceImpl.class);
 
-    private final OperationRepository operationRepository;
     private final OperationCacheService operationCacheService;
+    private final OperationHistoryRepository operationHistoryRepository;
+    private final OperationRepository operationRepository;
 
     @Nonnull
     @Override
@@ -35,6 +39,15 @@ public class OperationServiceImpl
                 .stream()
                 .map(this::buildOperationInfo)
                 .collect(toList());
+    }
+
+    @Nonnull
+    @Override
+    public OperationInfo getOperation(@Nonnull Long id) {
+        return operationRepository
+                .findById(id)
+                .map(this::buildOperationInfo)
+                .orElseThrow(() -> new EntityNotFoundException(format("Operation not found by id '%s'", id)));
     }
 
     @Nonnull
@@ -48,7 +61,7 @@ public class OperationServiceImpl
             return operationCacheService.getValuesByKey(requestHash);
         }
 
-        final List<Operation> operations = operationRepository.findAllOperations(request);
+        final List<Operation> operations = operationHistoryRepository.findAllOperations(request);
         operationCacheService.save(requestHash, operations);
         return operations;
     }

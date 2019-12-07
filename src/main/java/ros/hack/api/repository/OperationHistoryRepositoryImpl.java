@@ -17,8 +17,8 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Repository
 @RequiredArgsConstructor
-public class OperationRepositoryImpl
-        implements OperationRepository {
+public class OperationHistoryRepositoryImpl
+        implements OperationHistoryRepository {
     private static final long DEFAULT_LIMIT = 10;
 
     private final EntityManager entityManager;
@@ -36,6 +36,7 @@ public class OperationRepositoryImpl
                 .where(operation.userId.eq(request.getUserId()))
                 .where(predicate)
                 .where(operation.id.goe(request.getLastItemId()))
+                .where(operation.ready)
                 .orderBy(operation.id.desc())
                 .limit(request.getItemsCount() > 0 ? request.getItemsCount() : DEFAULT_LIMIT);
 
