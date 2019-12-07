@@ -30,18 +30,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class ExceptionController {
     private static final Logger logger = getLogger(ExceptionController.class);
 
-//    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-//    @ExceptionHandler(AuthenticationException.class)
-//    public ErrorResponse handleBadRequest(AuthenticationException exception) {
-//        return new ErrorResponse(exception.getMessage());
-//    }
-//
-//    @ResponseStatus(HttpStatus.FORBIDDEN)
-//    @ExceptionHandler(AccessDeniedException.class)
-//    public ErrorResponse handleBadRequest(AccessDeniedException exception) {
-//        return new ErrorResponse(exception.getMessage());
-//    }
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse handleBadRequest(MethodArgumentNotValidException exception) {

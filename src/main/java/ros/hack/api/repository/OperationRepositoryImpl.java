@@ -13,33 +13,44 @@ import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 @Repository
 @RequiredArgsConstructor
 public class OperationRepositoryImpl
         implements OperationRepository {
+    private static final long DEFAULT_LIMIT = 10;
 
     private final EntityManager entityManager;
 
     @Nonnull
     @Override
+    @SuppressWarnings("all")
     public List<Operation> findAllOperations(@Nonnull OperationsRequest request) {
         JPAQuery query = new JPAQuery(entityManager);
         QOperation operation = QOperation.operation;
 
-        //Predicate predicate = buildPredicate(operation, request);
+        Predicate predicate = buildPredicate(operation, request);
 
         query.from(operation)
-               // .where(predicate)
-                .orderBy(operation.id.desc());
+                .where(operation.userId.eq(request.getUserId()))
+                .where(predicate)
+                .where(operation.id.goe(request.getLastItemId()))
+                .orderBy(operation.id.desc())
+                .limit(request.getItemsCount() > 0 ? request.getItemsCount() : DEFAULT_LIMIT);
 
         return query.fetch();
     }
 
     @Nonnull
     private Predicate buildPredicate(@Nonnull QOperation operation, @Nonnull OperationsRequest request) {
-        return new BooleanBuilder(operation.isNotNull())
-                .and(operation.userId.eq(request.getUserId()))
-                //.and(operation.date.between(request.getDateFrom(), request.getDateTill()))
-                .and(operation.sourceId.containsIgnoreCase(request.getSourceId()));
+        BooleanBuilder predicate = new BooleanBuilder();
+        if (isNotEmpty(request.getSourceId())) {
+            predicate.and(operation.sourceId.eq(request.getSourceId()));
+        }
+        if (isNotEmpty(request.getCategory())) {
+            predicate.and(operation.mcc.eq(request.getCategory()));
+        }
+        return predicate;
     }
 }

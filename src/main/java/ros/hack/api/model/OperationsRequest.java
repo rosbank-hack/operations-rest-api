@@ -3,14 +3,15 @@ package ros.hack.api.model;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 @Data
 public class OperationsRequest {
+    private int lastItemId;
+    private int itemsCount;
     @NotEmpty
     private String userId;
-    private LocalDateTime dateFrom;
-    private LocalDateTime dateTill;
+    private String dateFrom;
+    private String dateTill;
     private String sourceId;
+    private String category;
 }

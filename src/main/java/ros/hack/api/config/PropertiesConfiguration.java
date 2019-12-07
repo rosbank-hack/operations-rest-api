@@ -8,5 +8,4 @@ import ros.hack.api.config.properties.RedisProperties;
 @EnableConfigurationProperties({
         RedisProperties.class
 })
-public class PropertiesConfiguration {
-}
+public class PropertiesConfiguration { }

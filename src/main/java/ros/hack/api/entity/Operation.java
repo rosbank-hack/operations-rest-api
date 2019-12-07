@@ -11,15 +11,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Data
 @Entity
 @RedisHash("operation")
-@Table(name = "operation")
+@Table(name = "operation", uniqueConstraints = @UniqueConstraint(columnNames = {"operation_id", "service"}))
 @Accessors(chain = true)
 public class Operation
         implements Serializable {
@@ -41,7 +42,7 @@ public class Operation
     private String name;
 
     @Column(name = "date", nullable = false)
-    private LocalDateTime date;
+    private Date date;
 
     @Column(name = "status")
     private String status;
