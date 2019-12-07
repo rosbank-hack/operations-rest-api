@@ -12,13 +12,14 @@ import ros.hack.api.model.OperationsRequest;
 import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Repository
 @RequiredArgsConstructor
-public class OperationHistoryRepositoryImpl
-        implements OperationHistoryRepository {
+public class OperationRepositoryImpl
+        implements OperationRepository {
     private static final long DEFAULT_LIMIT = 10;
 
     private final EntityManager entityManager;
@@ -26,7 +27,7 @@ public class OperationHistoryRepositoryImpl
     @Nonnull
     @Override
     @SuppressWarnings("all")
-    public List<Operation> findAllOperations(@Nonnull OperationsRequest request) {
+    public List<Operation> findAll(@Nonnull OperationsRequest request) {
         JPAQuery query = new JPAQuery(entityManager);
         QOperation operation = QOperation.operation;
 
@@ -36,11 +37,26 @@ public class OperationHistoryRepositoryImpl
                 .where(operation.userId.eq(request.getUserId()))
                 .where(predicate)
                 .where(operation.id.goe(request.getLastItemId()))
-                .where(operation.ready)
+                .where(operation.ready.eq(true))
                 .orderBy(operation.id.desc())
                 .limit(request.getItemsCount() > 0 ? request.getItemsCount() : DEFAULT_LIMIT);
 
         return query.fetch();
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings("all")
+    public Optional<Operation> findById(@Nonnull Long id) {
+        JPAQuery query = new JPAQuery(entityManager);
+        QOperation operation = QOperation.operation;
+
+        query.from(operation)
+                .where(operation.id.eq(id))
+                .where(operation.ready.eq(true))
+                .limit(1);
+
+        return Optional.ofNullable((Operation) query.fetchFirst());
     }
 
     @Nonnull

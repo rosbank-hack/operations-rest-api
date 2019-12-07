@@ -8,7 +8,6 @@ import ros.hack.api.entity.Operation;
 import ros.hack.api.model.OperationInfo;
 import ros.hack.api.model.OperationsRequest;
 import ros.hack.api.redis.OperationCacheService;
-import ros.hack.api.repository.OperationHistoryRepository;
 import ros.hack.api.repository.OperationRepository;
 
 import javax.annotation.Nonnull;
@@ -27,9 +26,8 @@ public class OperationServiceImpl
         implements OperationService {
     private static final Logger logger = getLogger(OperationServiceImpl.class);
 
-    private final OperationCacheService operationCacheService;
-    private final OperationHistoryRepository operationHistoryRepository;
     private final OperationRepository operationRepository;
+    private final OperationCacheService operationCacheService;
 
     @Nonnull
     @Override
@@ -61,7 +59,7 @@ public class OperationServiceImpl
             return operationCacheService.getValuesByKey(requestHash);
         }
 
-        final List<Operation> operations = operationHistoryRepository.findAllOperations(request);
+        final List<Operation> operations = operationRepository.findAll(request);
         operationCacheService.save(requestHash, operations);
         return operations;
     }
