@@ -4,13 +4,12 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Data
 @Accessors(chain = true)
 public class OperationInfo {
     private long itemId;
-    private UUID operationId;
+    private String operationId;
     private String service;
     private String name;
     private String date;
