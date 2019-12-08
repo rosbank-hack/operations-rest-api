@@ -23,6 +23,7 @@ public class OperationController {
     private final OperationService operationService;
 
     @PostMapping(
+            path = "/search",
             consumes = APPLICATION_JSON_UTF8_VALUE,
             produces = APPLICATION_JSON_UTF8_VALUE
     )
